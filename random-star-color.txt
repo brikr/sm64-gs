@@ -1,0 +1,62 @@
+// On each level load, rewrites the star texture to a random color
+812F2548 1000
+812AAFC4 1000
+81500000 001F
+81500002 1820
+81500004 0C0E
+81500006 0EEC
+81500008 2400
+8150000C 3448
+8150000E 0001
+81500010 3404
+81500012 0003
+81500014 0C09
+81500016 DFC8
+81500018 2400
+8150001C 3C09
+8150001E 0002
+81500020 3529
+81500022 A6F0
+81500024 0122
+81500026 4820
+81500028 252A
+8150002A 0800
+8150002C A528
+8150002E 0000
+81500030 152A
+81500032 FFFE
+81500034 2529
+81500036 0002
+81500038 0060
+8150003A 0008
+8150003C 2400
+8137E474 0814
+8137E476 0000
+
+// Special thanks to queueRAM for fixing up the assembly of the previous star color code and writing the assembly for this
+.org 0x802f2548
+b 0x802f256c
+.org 0x802aafc4
+b 0x802aafd4
+
+.org 0x80500000
+RandomizeStarColor:
+move  v1, ra
+jal   0x80383BB0
+nop
+ori   t0, v0, 0x1
+li    a0, 3
+jal   0x80277F20
+nop
+li    t1, 0x2a6f0
+add   t1, t1, v0
+addiu t2, t1, 0x800
+loop:
+  sh    t0, 0(t1)
+  bne   t2, t1, loop
+  addiu t1, t1, 2
+jr    v1
+nop
+
+.org 0x8037e474
+j RandomizeStarColor
